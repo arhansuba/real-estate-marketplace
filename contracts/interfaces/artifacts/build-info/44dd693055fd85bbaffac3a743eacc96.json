@@ -1,0 +1,2241 @@
+{
+	"id": "44dd693055fd85bbaffac3a743eacc96",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.26",
+	"solcLongVersion": "0.8.26+commit.8a97fa7a",
+	"input": {
+		"language": "Solidity",
+		"sources": {
+			"contracts/interfaces/IEscrow.sol": {
+				"content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface IEscrow {\n    // Enum to represent the state of an escrow agreement\n    enum EscrowStatus { Created, Funded, Released, Cancelled, Disputed }\n\n    // Structure to define an escrow agreement\n    struct EscrowAgreement {\n        uint256 escrowId;\n        address buyer;\n        address seller;\n        uint256 propertyId;\n        uint256 amount;\n        EscrowStatus status;\n        uint256 createdAt;\n        uint256 updatedAt;\n        uint256 disputeAt;\n    }\n\n    // Events\n    event EscrowCreated(uint256 indexed escrowId, address indexed buyer, address indexed seller, uint256 propertyId, uint256 amount);\n    event EscrowFunded(uint256 indexed escrowId, address indexed buyer, uint256 amount);\n    event EscrowReleased(uint256 indexed escrowId, address indexed seller, uint256 amount);\n    event EscrowCancelled(uint256 indexed escrowId, address indexed buyer, uint256 amount);\n    event EscrowDisputed(uint256 indexed escrowId, address indexed buyer, address indexed seller, uint256 amount);\n\n    // Function to create a new escrow agreement\n    function createEscrow(address seller, uint256 propertyId, uint256 amount) external returns (uint256);\n\n    // Function to fund an escrow agreement\n    function fundEscrow(uint256 escrowId) external payable;\n\n    // Function to release funds from an escrow agreement to the seller\n    function releaseEscrow(uint256 escrowId) external;\n\n    // Function to cancel an escrow agreement and refund the buyer\n    function cancelEscrow(uint256 escrowId) external;\n\n    // Function to dispute an escrow agreement\n    function disputeEscrow(uint256 escrowId) external;\n\n    // Function to get details of a specific escrow agreement\n    function getEscrowAgreement(uint256 escrowId) external view returns (EscrowAgreement memory);\n\n    // Function to get the number of active escrow agreements for a specific buyer\n    function getActiveEscrowCount(address buyer) external view returns (uint256);\n\n    // Function to get all escrow agreements for a specific buyer\n    function getBuyerEscrows(address buyer) external view returns (EscrowAgreement[] memory);\n\n    // Function to get all escrow agreements for a specific seller\n    function getSellerEscrows(address seller) external view returns (EscrowAgreement[] memory);\n}\n"
+			}
+		},
+		"settings": {
+			"optimizer": {
+				"enabled": false,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			},
+			"remappings": []
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/interfaces/IEscrow.sol": {
+				"IEscrow": {
+					"abi": [
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "EscrowCancelled",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "seller",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "propertyId",
+									"type": "uint256"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "EscrowCreated",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "seller",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "EscrowDisputed",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "EscrowFunded",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": true,
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								},
+								{
+									"indexed": true,
+									"internalType": "address",
+									"name": "seller",
+									"type": "address"
+								},
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "EscrowReleased",
+							"type": "event"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								}
+							],
+							"name": "cancelEscrow",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "seller",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "propertyId",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "amount",
+									"type": "uint256"
+								}
+							],
+							"name": "createEscrow",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								}
+							],
+							"name": "disputeEscrow",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								}
+							],
+							"name": "fundEscrow",
+							"outputs": [],
+							"stateMutability": "payable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								}
+							],
+							"name": "getActiveEscrowCount",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "buyer",
+									"type": "address"
+								}
+							],
+							"name": "getBuyerEscrows",
+							"outputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "escrowId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "address",
+											"name": "buyer",
+											"type": "address"
+										},
+										{
+											"internalType": "address",
+											"name": "seller",
+											"type": "address"
+										},
+										{
+											"internalType": "uint256",
+											"name": "propertyId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "amount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "enum IEscrow.EscrowStatus",
+											"name": "status",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint256",
+											"name": "createdAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "updatedAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "disputeAt",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IEscrow.EscrowAgreement[]",
+									"name": "",
+									"type": "tuple[]"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								}
+							],
+							"name": "getEscrowAgreement",
+							"outputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "escrowId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "address",
+											"name": "buyer",
+											"type": "address"
+										},
+										{
+											"internalType": "address",
+											"name": "seller",
+											"type": "address"
+										},
+										{
+											"internalType": "uint256",
+											"name": "propertyId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "amount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "enum IEscrow.EscrowStatus",
+											"name": "status",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint256",
+											"name": "createdAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "updatedAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "disputeAt",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IEscrow.EscrowAgreement",
+									"name": "",
+									"type": "tuple"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "seller",
+									"type": "address"
+								}
+							],
+							"name": "getSellerEscrows",
+							"outputs": [
+								{
+									"components": [
+										{
+											"internalType": "uint256",
+											"name": "escrowId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "address",
+											"name": "buyer",
+											"type": "address"
+										},
+										{
+											"internalType": "address",
+											"name": "seller",
+											"type": "address"
+										},
+										{
+											"internalType": "uint256",
+											"name": "propertyId",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "amount",
+											"type": "uint256"
+										},
+										{
+											"internalType": "enum IEscrow.EscrowStatus",
+											"name": "status",
+											"type": "uint8"
+										},
+										{
+											"internalType": "uint256",
+											"name": "createdAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "updatedAt",
+											"type": "uint256"
+										},
+										{
+											"internalType": "uint256",
+											"name": "disputeAt",
+											"type": "uint256"
+										}
+									],
+									"internalType": "struct IEscrow.EscrowAgreement[]",
+									"name": "",
+									"type": "tuple[]"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "escrowId",
+									"type": "uint256"
+								}
+							],
+							"name": "releaseEscrow",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {},
+						"version": 1
+					},
+					"evm": {
+						"assembly": "",
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"gasEstimates": null,
+						"legacyAssembly": null,
+						"methodIdentifiers": {
+							"cancelEscrow(uint256)": "e0182436",
+							"createEscrow(address,uint256,uint256)": "e2ecb311",
+							"disputeEscrow(uint256)": "b563153c",
+							"fundEscrow(uint256)": "c9c31af5",
+							"getActiveEscrowCount(address)": "891f3dc8",
+							"getBuyerEscrows(address)": "b3f197d7",
+							"getEscrowAgreement(uint256)": "a894ca43",
+							"getSellerEscrows(address)": "2ac08bd3",
+							"releaseEscrow(uint256)": "ed653164"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.26+commit.8a97fa7a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EscrowCancelled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"propertyId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EscrowCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EscrowDisputed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EscrowFunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EscrowReleased\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"}],\"name\":\"cancelEscrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"propertyId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"createEscrow\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"}],\"name\":\"disputeEscrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"}],\"name\":\"fundEscrow\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"}],\"name\":\"getActiveEscrowCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"}],\"name\":\"getBuyerEscrows\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"propertyId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"enum IEscrow.EscrowStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"updatedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"disputeAt\",\"type\":\"uint256\"}],\"internalType\":\"struct IEscrow.EscrowAgreement[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"}],\"name\":\"getEscrowAgreement\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"propertyId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"enum IEscrow.EscrowStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"updatedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"disputeAt\",\"type\":\"uint256\"}],\"internalType\":\"struct IEscrow.EscrowAgreement\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"}],\"name\":\"getSellerEscrows\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"buyer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"seller\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"propertyId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"enum IEscrow.EscrowStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"updatedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"disputeAt\",\"type\":\"uint256\"}],\"internalType\":\"struct IEscrow.EscrowAgreement[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"escrowId\",\"type\":\"uint256\"}],\"name\":\"releaseEscrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/IEscrow.sol\":\"IEscrow\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/interfaces/IEscrow.sol\":{\"keccak256\":\"0xc8f2f26afe7e09ba77f1e2a5fdb18ae62bfeb7d64af0ca89333b44f4e3c5cd4b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c6f377afee6415da1aa0e1a0ee2a9bd9af000c4906ce35d49cb34536770cc186\",\"dweb:/ipfs/QmRHNiHRwpKP8qspSv6X4JhUVt4AgTnbW8iWK9WmYKdZyQ\"]}},\"version\":1}",
+					"storageLayout": {
+						"storage": [],
+						"types": null
+					},
+					"userdoc": {
+						"kind": "user",
+						"methods": {},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/interfaces/IEscrow.sol": {
+				"ast": {
+					"absolutePath": "contracts/interfaces/IEscrow.sol",
+					"exportedSymbols": {
+						"IEscrow": [
+							138
+						]
+					},
+					"id": 139,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 1,
+							"literals": [
+								"solidity",
+								"^",
+								"0.8",
+								".0"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "32:23:0"
+						},
+						{
+							"abstract": false,
+							"baseContracts": [],
+							"canonicalName": "IEscrow",
+							"contractDependencies": [],
+							"contractKind": "interface",
+							"fullyImplemented": false,
+							"id": 138,
+							"linearizedBaseContracts": [
+								138
+							],
+							"name": "IEscrow",
+							"nameLocation": "67:7:0",
+							"nodeType": "ContractDefinition",
+							"nodes": [
+								{
+									"canonicalName": "IEscrow.EscrowStatus",
+									"id": 7,
+									"members": [
+										{
+											"id": 2,
+											"name": "Created",
+											"nameLocation": "159:7:0",
+											"nodeType": "EnumValue",
+											"src": "159:7:0"
+										},
+										{
+											"id": 3,
+											"name": "Funded",
+											"nameLocation": "168:6:0",
+											"nodeType": "EnumValue",
+											"src": "168:6:0"
+										},
+										{
+											"id": 4,
+											"name": "Released",
+											"nameLocation": "176:8:0",
+											"nodeType": "EnumValue",
+											"src": "176:8:0"
+										},
+										{
+											"id": 5,
+											"name": "Cancelled",
+											"nameLocation": "186:9:0",
+											"nodeType": "EnumValue",
+											"src": "186:9:0"
+										},
+										{
+											"id": 6,
+											"name": "Disputed",
+											"nameLocation": "197:8:0",
+											"nodeType": "EnumValue",
+											"src": "197:8:0"
+										}
+									],
+									"name": "EscrowStatus",
+									"nameLocation": "144:12:0",
+									"nodeType": "EnumDefinition",
+									"src": "139:68:0"
+								},
+								{
+									"canonicalName": "IEscrow.EscrowAgreement",
+									"id": 27,
+									"members": [
+										{
+											"constant": false,
+											"id": 9,
+											"mutability": "mutable",
+											"name": "escrowId",
+											"nameLocation": "301:8:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "293:16:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 8,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "293:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 11,
+											"mutability": "mutable",
+											"name": "buyer",
+											"nameLocation": "327:5:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "319:13:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_address",
+												"typeString": "address"
+											},
+											"typeName": {
+												"id": 10,
+												"name": "address",
+												"nodeType": "ElementaryTypeName",
+												"src": "319:7:0",
+												"stateMutability": "nonpayable",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 13,
+											"mutability": "mutable",
+											"name": "seller",
+											"nameLocation": "350:6:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "342:14:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_address",
+												"typeString": "address"
+											},
+											"typeName": {
+												"id": 12,
+												"name": "address",
+												"nodeType": "ElementaryTypeName",
+												"src": "342:7:0",
+												"stateMutability": "nonpayable",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 15,
+											"mutability": "mutable",
+											"name": "propertyId",
+											"nameLocation": "374:10:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "366:18:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 14,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "366:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 17,
+											"mutability": "mutable",
+											"name": "amount",
+											"nameLocation": "402:6:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "394:14:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 16,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "394:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 20,
+											"mutability": "mutable",
+											"name": "status",
+											"nameLocation": "431:6:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "418:19:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_enum$_EscrowStatus_$7",
+												"typeString": "enum IEscrow.EscrowStatus"
+											},
+											"typeName": {
+												"id": 19,
+												"nodeType": "UserDefinedTypeName",
+												"pathNode": {
+													"id": 18,
+													"name": "EscrowStatus",
+													"nameLocations": [
+														"418:12:0"
+													],
+													"nodeType": "IdentifierPath",
+													"referencedDeclaration": 7,
+													"src": "418:12:0"
+												},
+												"referencedDeclaration": 7,
+												"src": "418:12:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_enum$_EscrowStatus_$7",
+													"typeString": "enum IEscrow.EscrowStatus"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 22,
+											"mutability": "mutable",
+											"name": "createdAt",
+											"nameLocation": "455:9:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "447:17:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 21,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "447:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 24,
+											"mutability": "mutable",
+											"name": "updatedAt",
+											"nameLocation": "482:9:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "474:17:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 23,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "474:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										},
+										{
+											"constant": false,
+											"id": 26,
+											"mutability": "mutable",
+											"name": "disputeAt",
+											"nameLocation": "509:9:0",
+											"nodeType": "VariableDeclaration",
+											"scope": 27,
+											"src": "501:17:0",
+											"stateVariable": false,
+											"storageLocation": "default",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											},
+											"typeName": {
+												"id": 25,
+												"name": "uint256",
+												"nodeType": "ElementaryTypeName",
+												"src": "501:7:0",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												}
+											},
+											"visibility": "internal"
+										}
+									],
+									"name": "EscrowAgreement",
+									"nameLocation": "267:15:0",
+									"nodeType": "StructDefinition",
+									"scope": 138,
+									"src": "260:265:0",
+									"visibility": "public"
+								},
+								{
+									"anonymous": false,
+									"eventSelector": "59e4b8728799382406714f1c57de5c893d2772f9a8bf9950c5afe4397e648654",
+									"id": 39,
+									"name": "EscrowCreated",
+									"nameLocation": "551:13:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 38,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 29,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "581:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 39,
+												"src": "565:24:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 28,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "565:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 31,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "607:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 39,
+												"src": "591:21:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 30,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "591:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 33,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "seller",
+												"nameLocation": "630:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 39,
+												"src": "614:22:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 32,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "614:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 35,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "propertyId",
+												"nameLocation": "646:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 39,
+												"src": "638:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 34,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "638:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 37,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "666:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 39,
+												"src": "658:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 36,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "658:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "564:109:0"
+									},
+									"src": "545:129:0"
+								},
+								{
+									"anonymous": false,
+									"eventSelector": "4a2cd88ec7a748d5b20b3512d7249c67745777b219009075c745923684e9653d",
+									"id": 47,
+									"name": "EscrowFunded",
+									"nameLocation": "685:12:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 46,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 41,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "714:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 47,
+												"src": "698:24:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 40,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "698:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 43,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "740:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 47,
+												"src": "724:21:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 42,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "724:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 45,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "755:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 47,
+												"src": "747:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 44,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "747:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "697:65:0"
+									},
+									"src": "679:84:0"
+								},
+								{
+									"anonymous": false,
+									"eventSelector": "6244ed823ca6be0f11bc890c3fafcf3c29cb23420c14243642e930b5e07e6d0a",
+									"id": 55,
+									"name": "EscrowReleased",
+									"nameLocation": "774:14:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 54,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 49,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "805:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 55,
+												"src": "789:24:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 48,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "789:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 51,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "seller",
+												"nameLocation": "831:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 55,
+												"src": "815:22:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 50,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "815:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 53,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "847:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 55,
+												"src": "839:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 52,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "839:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "788:66:0"
+									},
+									"src": "768:87:0"
+								},
+								{
+									"anonymous": false,
+									"eventSelector": "db19fb28f3e1bd98931a09b28e0c217ab5008bfb3cbb1bdd406d994ad534a735",
+									"id": 63,
+									"name": "EscrowCancelled",
+									"nameLocation": "866:15:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 62,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 57,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "898:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 63,
+												"src": "882:24:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 56,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "882:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 59,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "924:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 63,
+												"src": "908:21:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 58,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "908:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 61,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "939:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 63,
+												"src": "931:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 60,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "931:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "881:65:0"
+									},
+									"src": "860:87:0"
+								},
+								{
+									"anonymous": false,
+									"eventSelector": "fd09265616bcfc35ec9e1dddf5359284ffb0ea9cdde1b250eff510f1dafafcad",
+									"id": 73,
+									"name": "EscrowDisputed",
+									"nameLocation": "958:14:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 72,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 65,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "989:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 73,
+												"src": "973:24:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 64,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "973:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 67,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "1015:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 73,
+												"src": "999:21:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 66,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "999:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 69,
+												"indexed": true,
+												"mutability": "mutable",
+												"name": "seller",
+												"nameLocation": "1038:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 73,
+												"src": "1022:22:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 68,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1022:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 71,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "1054:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 73,
+												"src": "1046:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 70,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1046:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "972:89:0"
+									},
+									"src": "952:110:0"
+								},
+								{
+									"functionSelector": "e2ecb311",
+									"id": 84,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "createEscrow",
+									"nameLocation": "1126:12:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 80,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 75,
+												"mutability": "mutable",
+												"name": "seller",
+												"nameLocation": "1147:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 84,
+												"src": "1139:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 74,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1139:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 77,
+												"mutability": "mutable",
+												"name": "propertyId",
+												"nameLocation": "1163:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 84,
+												"src": "1155:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 76,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1155:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 79,
+												"mutability": "mutable",
+												"name": "amount",
+												"nameLocation": "1183:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 84,
+												"src": "1175:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 78,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1175:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1138:52:0"
+									},
+									"returnParameters": {
+										"id": 83,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 82,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 84,
+												"src": "1209:7:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 81,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1209:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1208:9:0"
+									},
+									"scope": 138,
+									"src": "1117:101:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "c9c31af5",
+									"id": 89,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "fundEscrow",
+									"nameLocation": "1277:10:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 87,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 86,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "1296:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 89,
+												"src": "1288:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 85,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1288:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1287:18:0"
+									},
+									"returnParameters": {
+										"id": 88,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1322:0:0"
+									},
+									"scope": 138,
+									"src": "1268:55:0",
+									"stateMutability": "payable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "ed653164",
+									"id": 94,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "releaseEscrow",
+									"nameLocation": "1410:13:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 92,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 91,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "1432:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 94,
+												"src": "1424:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 90,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1424:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1423:18:0"
+									},
+									"returnParameters": {
+										"id": 93,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1450:0:0"
+									},
+									"scope": 138,
+									"src": "1401:50:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "e0182436",
+									"id": 99,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "cancelEscrow",
+									"nameLocation": "1533:12:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 97,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 96,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "1554:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 99,
+												"src": "1546:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 95,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1546:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1545:18:0"
+									},
+									"returnParameters": {
+										"id": 98,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1572:0:0"
+									},
+									"scope": 138,
+									"src": "1524:49:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "b563153c",
+									"id": 104,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "disputeEscrow",
+									"nameLocation": "1635:13:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 102,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 101,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "1657:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 104,
+												"src": "1649:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 100,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1649:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1648:18:0"
+									},
+									"returnParameters": {
+										"id": 103,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1675:0:0"
+									},
+									"scope": 138,
+									"src": "1626:50:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "a894ca43",
+									"id": 112,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getEscrowAgreement",
+									"nameLocation": "1753:18:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 107,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 106,
+												"mutability": "mutable",
+												"name": "escrowId",
+												"nameLocation": "1780:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 112,
+												"src": "1772:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 105,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1772:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1771:18:0"
+									},
+									"returnParameters": {
+										"id": 111,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 110,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 112,
+												"src": "1813:22:0",
+												"stateVariable": false,
+												"storageLocation": "memory",
+												"typeDescriptions": {
+													"typeIdentifier": "t_struct$_EscrowAgreement_$27_memory_ptr",
+													"typeString": "struct IEscrow.EscrowAgreement"
+												},
+												"typeName": {
+													"id": 109,
+													"nodeType": "UserDefinedTypeName",
+													"pathNode": {
+														"id": 108,
+														"name": "EscrowAgreement",
+														"nameLocations": [
+															"1813:15:0"
+														],
+														"nodeType": "IdentifierPath",
+														"referencedDeclaration": 27,
+														"src": "1813:15:0"
+													},
+													"referencedDeclaration": 27,
+													"src": "1813:15:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_struct$_EscrowAgreement_$27_storage_ptr",
+														"typeString": "struct IEscrow.EscrowAgreement"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1812:24:0"
+									},
+									"scope": 138,
+									"src": "1744:93:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "891f3dc8",
+									"id": 119,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getActiveEscrowCount",
+									"nameLocation": "1935:20:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 115,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 114,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "1964:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 119,
+												"src": "1956:13:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 113,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1956:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1955:15:0"
+									},
+									"returnParameters": {
+										"id": 118,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 117,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 119,
+												"src": "1994:7:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 116,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1994:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1993:9:0"
+									},
+									"scope": 138,
+									"src": "1926:77:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "b3f197d7",
+									"id": 128,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getBuyerEscrows",
+									"nameLocation": "2084:15:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 122,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 121,
+												"mutability": "mutable",
+												"name": "buyer",
+												"nameLocation": "2108:5:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 128,
+												"src": "2100:13:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 120,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "2100:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "2099:15:0"
+									},
+									"returnParameters": {
+										"id": 127,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 126,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 128,
+												"src": "2138:24:0",
+												"stateVariable": false,
+												"storageLocation": "memory",
+												"typeDescriptions": {
+													"typeIdentifier": "t_array$_t_struct$_EscrowAgreement_$27_memory_ptr_$dyn_memory_ptr",
+													"typeString": "struct IEscrow.EscrowAgreement[]"
+												},
+												"typeName": {
+													"baseType": {
+														"id": 124,
+														"nodeType": "UserDefinedTypeName",
+														"pathNode": {
+															"id": 123,
+															"name": "EscrowAgreement",
+															"nameLocations": [
+																"2138:15:0"
+															],
+															"nodeType": "IdentifierPath",
+															"referencedDeclaration": 27,
+															"src": "2138:15:0"
+														},
+														"referencedDeclaration": 27,
+														"src": "2138:15:0",
+														"typeDescriptions": {
+															"typeIdentifier": "t_struct$_EscrowAgreement_$27_storage_ptr",
+															"typeString": "struct IEscrow.EscrowAgreement"
+														}
+													},
+													"id": 125,
+													"nodeType": "ArrayTypeName",
+													"src": "2138:17:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_array$_t_struct$_EscrowAgreement_$27_storage_$dyn_storage_ptr",
+														"typeString": "struct IEscrow.EscrowAgreement[]"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "2137:26:0"
+									},
+									"scope": 138,
+									"src": "2075:89:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"functionSelector": "2ac08bd3",
+									"id": 137,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getSellerEscrows",
+									"nameLocation": "2246:16:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 131,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 130,
+												"mutability": "mutable",
+												"name": "seller",
+												"nameLocation": "2271:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 137,
+												"src": "2263:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 129,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "2263:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "2262:16:0"
+									},
+									"returnParameters": {
+										"id": 136,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 135,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 137,
+												"src": "2302:24:0",
+												"stateVariable": false,
+												"storageLocation": "memory",
+												"typeDescriptions": {
+													"typeIdentifier": "t_array$_t_struct$_EscrowAgreement_$27_memory_ptr_$dyn_memory_ptr",
+													"typeString": "struct IEscrow.EscrowAgreement[]"
+												},
+												"typeName": {
+													"baseType": {
+														"id": 133,
+														"nodeType": "UserDefinedTypeName",
+														"pathNode": {
+															"id": 132,
+															"name": "EscrowAgreement",
+															"nameLocations": [
+																"2302:15:0"
+															],
+															"nodeType": "IdentifierPath",
+															"referencedDeclaration": 27,
+															"src": "2302:15:0"
+														},
+														"referencedDeclaration": 27,
+														"src": "2302:15:0",
+														"typeDescriptions": {
+															"typeIdentifier": "t_struct$_EscrowAgreement_$27_storage_ptr",
+															"typeString": "struct IEscrow.EscrowAgreement"
+														}
+													},
+													"id": 134,
+													"nodeType": "ArrayTypeName",
+													"src": "2302:17:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_array$_t_struct$_EscrowAgreement_$27_storage_$dyn_storage_ptr",
+														"typeString": "struct IEscrow.EscrowAgreement[]"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "2301:26:0"
+									},
+									"scope": 138,
+									"src": "2237:91:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								}
+							],
+							"scope": 139,
+							"src": "57:2273:0",
+							"usedErrors": [],
+							"usedEvents": [
+								39,
+								47,
+								55,
+								63,
+								73
+							]
+						}
+					],
+					"src": "32:2299:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}
