@@ -46,13 +46,26 @@ contract Property is ERC721Enumerable, Ownable {
         return propertyId;
     }
 
-    function getPropertyDetails(uint256 propertyId) external view returns (PropertyDetails memory) {
+    function getPropertyDetails(uint256 propertyId)
+        external
+        view
+        returns (PropertyDetails memory)
+    {
         return properties[propertyId];
     }
-}
+
     // Define events
-    event PropertyUpdated(uint256 indexed propertyId, address indexed owner, string newDescription, uint256 newPrice);
-    event OwnershipTransferred(uint256 indexed propertyId, address indexed previousOwner, address indexed newOwner);
+    event PropertyUpdated(
+        uint256 indexed propertyId,
+        address indexed owner,
+        string newDescription,
+        uint256 newPrice
+    );
+    event OwnershipTransferred(
+        uint256 indexed propertyId,
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     // Define state variables
     struct PropertyDetails {
@@ -65,12 +78,16 @@ contract Property is ERC721Enumerable, Ownable {
 
     mapping(uint256 => PropertyDetails) public properties;
     uint256 public nextPropertyId;
-    
+
     // Constructor
     constructor() {}
 
     // Function to create a new property
-    function createProperty(string calldata description, uint256 price, address paymentToken) external whenNotPaused onlyOwner {
+    function createProperty(
+        string calldata description,
+        uint256 price,
+        address paymentToken
+    ) external whenNotPaused onlyOwner {
         require(price > 0, "Price must be greater than 0");
         require(paymentToken != address(0), "Invalid payment token address");
 
@@ -87,9 +104,16 @@ contract Property is ERC721Enumerable, Ownable {
     }
 
     // Function to update property details
-    function updateProperty(uint256 propertyId, string calldata newDescription, uint256 newPrice) external whenNotPaused {
+    function updateProperty(
+        uint256 propertyId,
+        string calldata newDescription,
+        uint256 newPrice
+    ) external whenNotPaused {
         PropertyDetails storage property = properties[propertyId];
-        require(property.owner == msg.sender, "Only the owner can update property details");
+        require(
+            property.owner == msg.sender,
+            "Only the owner can update property details"
+        );
         require(newPrice > 0, "Price must be greater than 0");
 
         property.description = newDescription;
@@ -99,21 +123,33 @@ contract Property is ERC721Enumerable, Ownable {
     }
 
     // Function to set property for sale
-    function setPropertyForSale(uint256 propertyId, bool forSale) external whenNotPaused {
+    function setPropertyForSale(uint256 propertyId, bool forSale)
+        external
+        whenNotPaused
+    {
         PropertyDetails storage property = properties[propertyId];
-        require(property.owner == msg.sender, "Only the owner can set property for sale");
+        require(
+            property.owner == msg.sender,
+            "Only the owner can set property for sale"
+        );
 
         property.isForSale = forSale;
     }
 
     // Function to transfer ownership of the property
-    function transferOwnership(uint256 propertyId, address newOwner) external whenNotPaused {
+    function transferOwnership(uint256 propertyId, address newOwner)
+        external
+        whenNotPaused
+    {
         PropertyDetails storage property = properties[propertyId];
-        require(property.owner == msg.sender, "Only the owner can transfer ownership");
+        require(
+            property.owner == msg.sender,
+            "Only the owner can transfer ownership"
+        );
         require(newOwner != address(0), "Invalid new owner address");
 
         property.owner = newOwner;
-        property.isForSale = false;  // Automatically remove from sale
+        property.isForSale = false; // Automatically remove from sale
 
         emit OwnershipTransferred(propertyId, msg.sender, newOwner);
     }
@@ -143,10 +179,10 @@ contract Property is ERC721Enumerable, Ownable {
     function unpause() external onlyOwner {
         _unpause();
     }
-    
+
     // Placeholder for external integration (e.g., with external systems or protocols)
     //function integrateWithExternalSystem(uint256 propertyId) external view returns (bool) {
-        // Example integration logic
-      //  return true;
-   // }
+    // Example integration logic
+    //  return true;
+    // }
 }
